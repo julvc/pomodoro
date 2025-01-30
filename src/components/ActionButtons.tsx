@@ -10,17 +10,17 @@ interface ActionButtonsProps {
 const ActionButtons: React.FC<ActionButtonsProps> = ({ isRunning, onStartPause, onReset }) => {
   return (
     <div className="mt-4 d-flex flex-column gap-3 flex-sm-row justify-content-center">
-      <button
-        onClick={onStartPause}
-        className="btn btn-lg btn-primary d-flex align-items-center gap-2"
-      >
+<button
+  onClick={onStartPause}
+  className="btn btn-primary d-flex align-items-center gap-2 btn-sm btn-md-lg"
+>
         {isRunning ? <FaPause /> : <FaPlay />}
         {isRunning ? "Pause" : "Start"}
       </button>
       <button
-        onClick={onReset}
-        className="btn btn-lg btn-secondary d-flex align-items-center gap-2"
-      >
+  onClick={onReset}
+  className="btn btn-secondary d-flex align-items-center gap-2 btn-sm btn-md-lg"
+>
         <FaRedo />
         Reset
       </button>

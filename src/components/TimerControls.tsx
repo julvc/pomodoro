@@ -15,14 +15,14 @@ const TimerControls: React.FC<TimerControlsProps> = ({ title, value, onIncrement
       <div className="d-flex justify-content-center align-items-center gap-4">
         <button
           onClick={onDecrement}
-          className="btn btn-lg btn-danger rounded-circle"
+          className="btn btn-danger px-4 py-2 w-auto h-auto"
         >
           <FaMinus />
         </button>
         <span className="fs-3">{value}</span>
         <button
           onClick={onIncrement}
-          className="btn btn-lg btn-success rounded-circle"
+          className="btn btn-success px-4 py-2 w-auto h-auto"
         >
           <FaPlus />
         </button>

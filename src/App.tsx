@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import TimerControls from "./components/TimerControls";
-import Display from "./components/Display";
-import ActionButtons from "./components/ActionButtons";
+import TimerControls from './components/TimerControls';
+import Display from './components/Display';
+import ActionButtons from './components/ActionButtons';
 
 const App: React.FC = () => {
   const [breakLength, setBreakLength] = useState<number>(5);
@@ -9,8 +9,9 @@ const App: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number>(sessionLength * 60);
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
+
   const handleIncrement = (type: 'break' | 'session') => {
-    if (type === 'break') setBreakLength(prev => prev + 1);
+    if (type === 'break') setBreakLength((prev) => prev + 1);
     else {
       const newSession = sessionLength + 1;
       setSessionLength(newSession);
@@ -19,7 +20,7 @@ const App: React.FC = () => {
   };
 
   const handleDecrement = (type: 'break' | 'session') => {
-    if (type === 'break' && breakLength > 1) setBreakLength(prev => prev - 1);
+    if (type === 'break' && breakLength > 1) setBreakLength((prev) => prev - 1);
     else if (type === 'session' && sessionLength > 1) {
       const newSession = sessionLength - 1;
       setSessionLength(newSession);
@@ -39,10 +40,34 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-vh-100 bg-gradient p-5 d-flex flex-column align-items-center justify-content-center text-white">
-      <h1 className="display-4 mb-5">Pomodoro Timer</h1>
-      <div className="bg-primary p-4 rounded shadow w-75">
-        <div className="d-flex flex-wrap justify-content-between mb-4">
+    <div
+      className="vh-100 d-flex flex-column justify-content-center align-items-center px-md-5 px-3 text-white"
+      style={{
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        backgroundImage: "url('./src/assets/background.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundBlendMode: 'overlay',
+        backdropFilter: 'blur(10px)',
+      }}
+    >
+      <h1 className="display-4 mb-5" style={{ fontFamily: 'OnePieceFont' }}>
+        POMODORO TIMER
+      </h1>
+      <div
+        className="w-md-75 w-lg-50 max-h-75 w-100 rounded p-3 shadow-lg"
+        style={{
+          backgroundColor: '#4B3F72',
+          maxWidth: '750px',
+          maxHeight: '750px',
+          minHeight: '350px',
+          padding: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div className="d-flex justify-content-between mb-4 flex-wrap">
           <TimerControls
             title="Break Length"
             value={breakLength}
