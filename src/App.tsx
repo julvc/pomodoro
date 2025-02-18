@@ -1,13 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TimerControls from './components/TimerControls';
 import Display from './components/Display';
 import ActionButtons from './components/ActionButtons';
+import alarmSound from './assets/alarm.mp3';
 
 const App: React.FC = () => {
   const [breakLength, setBreakLength] = useState<number>(5);
   const [sessionLength, setSessionLength] = useState<number>(25);
   const [timeLeft, setTimeLeft] = useState<number>(sessionLength * 60);
   const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [isBreak, setIsBreak] = useState<boolean>(false);
+  const [alarmPlaying, setAlarmPlaying] = useState<boolean>(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [timeIsUp, setTimeIsUp] = useState<boolean>(false);
+  const [isBreakActive, setIsBreakActive] = useState<boolean>(false);
+  const breakAlarmSound = "./src/assets/break.mp3";
+  const sessionAlarmSound = "./src/assets/session.mp3";
+
+  useEffect(() => {
+    if (isRunning) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev > 0) return prev - 1;
+          
+          if (audioRef.current) {
+            audioRef.current.src = !isBreakActive ? breakAlarmSound : sessionAlarmSound;
+            audioRef.current.play();
+            setAlarmPlaying(true);
+          }
+  
+          setTimeout(() => {
+            if (!isBreakActive) {
+              setIsBreakActive(true);
+              setTimeLeft(breakLength * 60);
+            } else {
+              setIsBreakActive(false);
+              setTimeLeft(sessionLength * 60);
+            }
+          });
+  
+          return 0;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isRunning, breakLength, sessionLength, isBreakActive]);
+  // useEffect(() => {
+  //   if (isRunning) {
+  //     timerRef.current = setInterval(() => {
+  //       setTimeLeft((prev) => {
+  //         if (prev > 0) return prev - 1;
+          
+  //         // Cuando llega a 0
+  //         if (audioRef.current) {
+  //           audioRef.current.play();
+  //           setAlarmPlaying(true);
+  //         }
+  
+  //         // Esperar 15 segundos antes de cambiar
+  //         setTimeout(() => {
+  //           if (!isBreakActive) {
+  //             setIsBreakActive(true);
+  //             setTimeLeft(breakLength * 60);
+  //           } else {
+  //             setIsBreakActive(false);
+  //             setTimeLeft(sessionLength * 60);
+  //           }
+  //         });
+  
+  //         return 0; // Mantener en 0 durante la alarma
+  //       });
+  //     }, 1000);
+  //   }
+  //   return () => {
+  //     if (timerRef.current) clearInterval(timerRef.current);
+  //   };
+  // }, [isRunning, breakLength, sessionLength, isBreakActive]);
 
 
   const handleIncrement = (type: 'break' | 'session') => {
@@ -30,13 +101,45 @@ const App: React.FC = () => {
 
   const handleStartPause = () => {
     setIsRunning(!isRunning);
+    if (timeIsUp) {
+      setTimeIsUp(false);
+    }
   };
 
   const handleReset = () => {
+    clearInterval(timerRef.current!);
     setIsRunning(false);
-    setBreakLength(5);
-    setSessionLength(25);
-    setTimeLeft(25 * 60);
+    setIsBreakActive(false);
+    setTimeLeft(sessionLength * 60);
+    setTimeIsUp(false);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setAlarmPlaying(false);
+    }
+  };
+  // const handleReset = () => {
+  //   clearInterval(timerRef.current!);
+  //   setIsRunning(false);
+  //   setIsBreak(false);
+  //   setTimeLeft(sessionLength * 60);
+  //   setBreakLength(5);
+  //   setSessionLength(25);
+  //   setTimeIsUp(false);
+  //   if (audioRef.current) {
+  //     audioRef.current.pause();
+  //     audioRef.current.currentTime = 0;
+  //     setAlarmPlaying(false);
+  //   }
+  // };
+
+  const handleStopAlarm = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setAlarmPlaying(false);
+    }
+    handleReset();
   };
 
   return (
@@ -44,13 +147,14 @@ const App: React.FC = () => {
       className="vh-100 d-flex flex-column justify-content-center align-items-center px-md-5 px-3 text-white"
       style={{
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        backgroundImage: "url('./src/assets/background.jpg')",
+        backgroundImage: `url('./src/assets/background.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundBlendMode: 'overlay',
         backdropFilter: 'blur(10px)',
       }}
     >
+      <audio ref={audioRef} src={alarmSound} />
       <h1 className="display-4 mb-5" style={{ fontFamily: 'OnePieceFont' }}>
         POMODORO TIMER
       </h1>
@@ -81,11 +185,12 @@ const App: React.FC = () => {
             onDecrement={() => handleDecrement('session')}
           />
         </div>
-        <Display timeLeft={timeLeft} />
+        <h2>{isBreakActive ? "Break Time" : "Session Time"}</h2>
+        <Display timeLeft={timeLeft} isBreakActive={isBreakActive} />
         <ActionButtons
           isRunning={isRunning}
           onStartPause={handleStartPause}
-          onReset={handleReset}
+          onReset={handleStopAlarm}
         />
       </div>
     </div>
