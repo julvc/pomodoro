@@ -7,10 +7,10 @@ interface TimerDisplayProps {
 
 const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeLeft, isBreakActive }) => {
   const imageSource = timeLeft === 0 
-    ? "./src/assets/end.png" 
+    ? "@/src/assets/end.png" 
     : isBreakActive 
-      ? "./src/assets/luffy.png"
-      : "./src/assets/end.png";
+      ? "@/src/assets/luffy.png"
+      : "@/src/assets/end.png";
 
   return (
     <div className="mb-4 text-center">
