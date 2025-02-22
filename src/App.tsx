@@ -17,7 +17,7 @@ const App: React.FC = () => {
   const [timeIsUp, setTimeIsUp] = useState<boolean>(false);
   const [isBreakActive, setIsBreakActive] = useState<boolean>(false);
   const breakAlarmSound = '/break.mp3';
-  const sessionAlarmSound = '/session.mp3';  
+  const sessionAlarmSound = '/session.mp3';
   // const breakAlarmSound = '@/src/assets/break.mp3';
   // const sessionAlarmSound = '@/src/assets/session.mp3';
 
@@ -93,7 +93,8 @@ const App: React.FC = () => {
   };
 
   const handleStopAlarm = () => {
-    if (audioRef.current && alarmPlaying) { // Usar alarmPlaying aquí
+    if (audioRef.current && alarmPlaying) {
+      // Usar alarmPlaying aquí
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       setAlarmPlaying(false);

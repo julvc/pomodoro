@@ -51,12 +51,12 @@ const TimerControls: React.FC<TimerControlsProps> = ({
           onClick={onDecrement}
           className="btn btn-outline-light btn-sm"
           disabled={value <= 1}
-          style={{ 
+          style={{
             backgroundColor: '#6a6a6a',
-            borderColor: '#6a6a6a'
+            borderColor: '#6a6a6a',
           }}
         >
-          <FaMinus style={{ color: '#FFD700' }}/>
+          <FaMinus style={{ color: '#FFD700' }} />
         </button>
 
         {isEditing ? (
@@ -65,7 +65,7 @@ const TimerControls: React.FC<TimerControlsProps> = ({
             value={inputValue}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            onKeyDown={handleKeyDown} 
+            onKeyDown={handleKeyDown}
             className="form-control form-control-sm text-center"
             style={{ width: '60px' }}
             autoFocus
@@ -84,12 +84,12 @@ const TimerControls: React.FC<TimerControlsProps> = ({
           onClick={onIncrement}
           className="btn btn-outline-light btn-sm"
           disabled={value >= 60}
-          style={{ 
+          style={{
             backgroundColor: '#6a6a6a',
-            borderColor: '#6a6a6a'
+            borderColor: '#6a6a6a',
           }}
         >
-          <FaPlus style={{ color: '#87CEEB' }}/>
+          <FaPlus style={{ color: '#87CEEB' }} />
         </button>
       </div>
     </div>
