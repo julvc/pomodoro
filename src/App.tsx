@@ -9,27 +9,29 @@ const App: React.FC = () => {
   const [sessionLength, setSessionLength] = useState<number>(25);
   const [timeLeft, setTimeLeft] = useState<number>(sessionLength * 60);
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [isBreak, setIsBreak] = useState<boolean>(false);
+  //const [isBreak, setIsBreak] = useState<boolean>(false);
   const [alarmPlaying, setAlarmPlaying] = useState<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [timeIsUp, setTimeIsUp] = useState<boolean>(false);
   const [isBreakActive, setIsBreakActive] = useState<boolean>(false);
-  const breakAlarmSound = "./src/assets/break.mp3";
-  const sessionAlarmSound = "./src/assets/session.mp3";
+  const breakAlarmSound = './src/assets/break.mp3';
+  const sessionAlarmSound = './src/assets/session.mp3';
 
   useEffect(() => {
     if (isRunning) {
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev > 0) return prev - 1;
-          
+
           if (audioRef.current) {
-            audioRef.current.src = !isBreakActive ? breakAlarmSound : sessionAlarmSound;
+            audioRef.current.src = !isBreakActive
+              ? breakAlarmSound
+              : sessionAlarmSound;
             audioRef.current.play();
             setAlarmPlaying(true);
           }
-  
+
           setTimeout(() => {
             if (!isBreakActive) {
               setIsBreakActive(true);
@@ -39,7 +41,7 @@ const App: React.FC = () => {
               setTimeLeft(sessionLength * 60);
             }
           });
-  
+
           return 0;
         });
       }, 1000);
@@ -48,38 +50,6 @@ const App: React.FC = () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [isRunning, breakLength, sessionLength, isBreakActive]);
-  // useEffect(() => {
-  //   if (isRunning) {
-  //     timerRef.current = setInterval(() => {
-  //       setTimeLeft((prev) => {
-  //         if (prev > 0) return prev - 1;
-          
-  //         // Cuando llega a 0
-  //         if (audioRef.current) {
-  //           audioRef.current.play();
-  //           setAlarmPlaying(true);
-  //         }
-  
-  //         // Esperar 15 segundos antes de cambiar
-  //         setTimeout(() => {
-  //           if (!isBreakActive) {
-  //             setIsBreakActive(true);
-  //             setTimeLeft(breakLength * 60);
-  //           } else {
-  //             setIsBreakActive(false);
-  //             setTimeLeft(sessionLength * 60);
-  //           }
-  //         });
-  
-  //         return 0; // Mantener en 0 durante la alarma
-  //       });
-  //     }, 1000);
-  //   }
-  //   return () => {
-  //     if (timerRef.current) clearInterval(timerRef.current);
-  //   };
-  // }, [isRunning, breakLength, sessionLength, isBreakActive]);
-
 
   const handleIncrement = (type: 'break' | 'session') => {
     if (type === 'break') setBreakLength((prev) => prev + 1);
@@ -118,28 +88,25 @@ const App: React.FC = () => {
       setAlarmPlaying(false);
     }
   };
-  // const handleReset = () => {
-  //   clearInterval(timerRef.current!);
-  //   setIsRunning(false);
-  //   setIsBreak(false);
-  //   setTimeLeft(sessionLength * 60);
-  //   setBreakLength(5);
-  //   setSessionLength(25);
-  //   setTimeIsUp(false);
-  //   if (audioRef.current) {
-  //     audioRef.current.pause();
-  //     audioRef.current.currentTime = 0;
-  //     setAlarmPlaying(false);
-  //   }
-  // };
 
   const handleStopAlarm = () => {
-    if (audioRef.current) {
+    if (audioRef.current && alarmPlaying) { // Usar alarmPlaying aquí
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       setAlarmPlaying(false);
     }
     handleReset();
+  };
+
+  const handleValueChange = (type: 'break' | 'session', newValue: number) => {
+    if (type === 'break') {
+      setBreakLength(newValue);
+    } else {
+      setSessionLength(newValue);
+      if (!isRunning) {
+        setTimeLeft(newValue * 60);
+      }
+    }
   };
 
   return (
@@ -177,15 +144,17 @@ const App: React.FC = () => {
             value={breakLength}
             onIncrement={() => handleIncrement('break')}
             onDecrement={() => handleDecrement('break')}
+            onChange={(value) => handleValueChange('break', value)}
           />
           <TimerControls
             title="Session Length"
             value={sessionLength}
             onIncrement={() => handleIncrement('session')}
             onDecrement={() => handleDecrement('session')}
+            onChange={(value) => handleValueChange('session', value)}
           />
         </div>
-        <h2>{isBreakActive ? "Break Time" : "Session Time"}</h2>
+        <h2>{isBreakActive ? 'Break Time' : 'Session Time'}</h2>
         <Display timeLeft={timeLeft} isBreakActive={isBreakActive} />
         <ActionButtons
           isRunning={isRunning}
