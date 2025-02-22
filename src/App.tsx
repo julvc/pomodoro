@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import TimerControls from './components/TimerControls';
 import Display from './components/Display';
 import ActionButtons from './components/ActionButtons';
-import alarmSound from '@/assets/alarm.mp3';
+import alarmSound from '/alarm.mp3';
 //import alarmSound from './assets/alarm.mp3';
 
 const App: React.FC = () => {
@@ -16,8 +16,10 @@ const App: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [timeIsUp, setTimeIsUp] = useState<boolean>(false);
   const [isBreakActive, setIsBreakActive] = useState<boolean>(false);
-  const breakAlarmSound = '@/src/assets/break.mp3';
-  const sessionAlarmSound = '@/src/assets/session.mp3';
+  const breakAlarmSound = '/break.mp3';
+  const sessionAlarmSound = '/session.mp3';  
+  // const breakAlarmSound = '@/src/assets/break.mp3';
+  // const sessionAlarmSound = '@/src/assets/session.mp3';
 
   useEffect(() => {
     if (isRunning) {
@@ -115,7 +117,8 @@ const App: React.FC = () => {
       className="vh-100 d-flex flex-column justify-content-center align-items-center px-md-5 px-3 text-white"
       style={{
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        backgroundImage: `url('@/src/assets/background.jpg')`,
+        backgroundImage: `url('/background.jpg')`,
+        // backgroundImage: `url('@/src/assets/background.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundBlendMode: 'overlay',
